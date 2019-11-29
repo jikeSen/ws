@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   <meta charset="utf-8">
+   <title>websocket测试</title>
+        
+   </head>
+   <body>
+        <p>jksen</p>
+        <button id='send'>发送</button>
+        <input type='text' id='inputText'>
+        <p id='dispStatus'>正在连接...</p>
+     
+            <script>
+                    var u = "jkSen"
+                    var inputText=document.getElementById('inputText');    
+                    var dispStatus=document.getElementById('dispStatus');
+                    var ws=new WebSocket('ws://127.0.0.1:8085/ws');    //创建websocket连接，，服务端的IP+端口号
+                    ws.onopen=function(e){  //开始创建连接时的事件
+                        dispStatus.innerText = "连接成功...."
+                        console.log(ws)
+                    }
+     
+                    ws.onmessage=function(e){   //读取服务端接收到的信息
+                        document.getElementById('send').onclick=function(e){
+                            var time = new Date();
+                            var hours = time.getHours();
+                            var minutes = time.getMinutes();
+                            var seconds = time.getSeconds();
+                            var nowTime =hours+":"+minutes+":"+seconds
+                            ws.send(u + "-" + nowTime + "：" + inputText.value);   //向服务端发送输入框中的值
+                        }
+                         
+                         console.log(e)
+                        dispStatus.innerHTML+= "<br/>"+e.data;        //信息显示
+                    }
+     
+                    ws.onclose = function(){
+                        dispStatus.innerHTM +="<br/>服务器关闭"
+                    }
+     
+                    ws.onerror = function() {
+                        dispStatus.innerHTM +="<br/>连接出错"
+                    }
+                </script>
+    </body>
+</html>
