@@ -13,9 +13,9 @@ const (
 
 // 定义发送的消息
 type Message struct {
-	ID      string
+	ID      string // 消息id
 	Content string
-	SentTo  int64
+	SendAt  int64 // 发消息用户
 	Type    int
 }
 

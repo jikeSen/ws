@@ -5,6 +5,9 @@
    <title>websocket测试</title>
         
    </head>
+   <script src="md5.js"></script>
+   <script src="./sha1.min.js"></script>
+
    <body>
         <p>jksen</p>
         <button id='send'>发送</button>
@@ -15,7 +18,12 @@
                     var u = "jkSen"
                     var inputText=document.getElementById('inputText');    
                     var dispStatus=document.getElementById('dispStatus');
-                    var ws=new WebSocket('ws://127.0.0.1:8085/ws');    //创建websocket连接，，服务端的IP+端口号
+                    var token="Bm/rVtNJ2wF+k7f0/p/0uQ=="
+                    var queryString = "app=99&tune=IASO010&uid=111888"
+
+                    secret = hex_sha1(hex_md5(token + "&" + queryString))
+
+                    var ws=new WebSocket('ws://127.0.0.1:8085/ws?app=99&uid=111888&tune=IASO010&token='+secret);    //创建websocket连接，，服务端的IP+端口号
                     ws.onopen=function(e){  //开始创建连接时的事件
                         dispStatus.innerText = "连接成功...."
                         console.log(ws)

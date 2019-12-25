@@ -22,6 +22,12 @@ type Client struct {
 	Id   string
 }
 
+// 定义在线用户
+type lineUserList struct {
+	List map[string]*Client
+}
+
+
 // 创建新的服务
 func NewSocketServer(w http.ResponseWriter, r *http.Request, id string) (cliect *Client, err error) {
 
@@ -45,7 +51,6 @@ func (client *Client) SendMsg(msgType int, content string) (err error) {
 	var Msg = &Message{
 		ID:      client.Id,
 		Content: content,
-		SentTo:  0,
 		Type:    msgType,
 	}
 
