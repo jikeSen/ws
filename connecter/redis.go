@@ -2,6 +2,7 @@ package connecter
 
 import (
     "github.com/gomodule/redigo/redis"
+    "go/ws/library"
     "time"
 )
 
@@ -13,7 +14,7 @@ func ConnectRedis() error {
         MaxActive:   35,
         IdleTimeout: 200,
         Dial: func() (redis.Conn, error) {
-            conn, err := redis.Dial("tcp", "127.0.0.1:6379")
+            conn, err := redis.Dial("tcp", library.RedisSet.Host+library.RedisSet.Port)
             if err != nil {
                 return nil, err
             }
