@@ -1,5 +1,10 @@
 package chat
 
+import (
+    "fmt"
+    "go/ws/library/code"
+)
+
 const (
     SysMsg   = 1 << iota // 系统消息
     LoginMsg             // 登录消息
@@ -15,13 +20,30 @@ const (
 // 定义发送的消息
 type Message struct {
     ID      string // 消息id
-    Content string
-    SendAt  int64 // 发消息用户
-    Type    int
+    Content string // 消息内容
+    SendAt  int64  // 发消息用户
+    Type    int    // 消息类型
+    Cmd     string // 执行的action （考虑和type的冲突）暂时保留
+}
+
+// 响应消息
+type RespMsg struct {
+    Code int    `json:"code"`
+    Msg  string `json:"msg"`
+    Data string `json:"data"`
 }
 
 // c2c消息
 type C2CMsg struct {
     Message
     ToAccount string
+}
+
+// 处理客户端消息
+func HandleGetMsg(client *Client, message []byte) {
+    fmt.Println("处理数据", client.Addr, string(message))
+
+    // 查询 送礼 扣费 流水等业务code
+
+    client.SendMsg(code.SUCCESS, code.GetCodeMsg(code.SUCCESS), "测试业务")
 }

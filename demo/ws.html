@@ -1,55 +1,60 @@
 <!DOCTYPE HTML>
 <html>
-   <head>
-   <meta charset="utf-8">
-   <title>websocket测试</title>
-        
-   </head>
-   <script src="md5.js"></script>
-   <script src="./sha1.min.js"></script>
+<head>
+    <meta charset="utf-8">
+    <title>websocket测试</title>
 
-   <body>
-        <p>jksen</p>
-        <button id='send'>发送</button>
-        <input type='text' id='inputText'>
-        <p id='dispStatus'>正在连接...</p>
-     
-            <script>
-                    var u = "jkSen"
-                    var inputText=document.getElementById('inputText');    
-                    var dispStatus=document.getElementById('dispStatus');
-                    var token="Bm/rVtNJ2wF+k7f0/p/0uQ=="
-                    var queryString = "app=99&tune=IASO010&uid=111888"
+</head>
+<script src="md5.js"></script>
+<script src="./sha1.min.js"></script>
 
-                    secret = hex_sha1(hex_md5(token + "&" + queryString))
+<body>
+<p>jksen</p>
+<button id='send' onclick="sendMsg()">发送</button>
+<input type='text' id='inputText'>
+<p id='dispStatus'>正在连接...</p>
 
-                    var ws=new WebSocket('ws://127.0.0.1:8085/ws?app=99&uid=111888&tune=IASO010&token='+secret);    //创建websocket连接，，服务端的IP+端口号
-                    ws.onopen=function(e){  //开始创建连接时的事件
-                        dispStatus.innerText = "连接成功...."
-                        console.log(ws)
-                    }
-     
-                    ws.onmessage=function(e){   //读取服务端接收到的信息
-                        document.getElementById('send').onclick=function(e){
-                            var time = new Date();
-                            var hours = time.getHours();
-                            var minutes = time.getMinutes();
-                            var seconds = time.getSeconds();
-                            var nowTime =hours+":"+minutes+":"+seconds
-                            ws.send(u + "-" + nowTime + "：" + inputText.value);   //向服务端发送输入框中的值
-                        }
-                         
-                         console.log(e)
-                        dispStatus.innerHTML+= "<br/>"+e.data;        //信息显示
-                    }
-     
-                    ws.onclose = function(){
-                        dispStatus.innerHTM +="<br/>服务器关闭"
-                    }
-     
-                    ws.onerror = function() {
-                        dispStatus.innerHTM +="<br/>连接出错"
-                    }
-                </script>
-    </body>
+<script>
+    var u = "jkSen"
+    var inputText = document.getElementById('inputText');
+    var dispStatus = document.getElementById('dispStatus');
+    var token = "Bm/rVtNJ2wF+k7f0/p/0uQ=="
+    var queryString = "app=99&tune=IASO010&uid=111888"
+
+    secret = hex_sha1(hex_md5(token + "&" + queryString))
+
+    var ws = new WebSocket('ws://127.0.0.1:8085/ws?app=99&uid=111888&tune=IASO010&token=' + secret);    //创建websocket连接，，服务端的IP+端口号
+    ws.onopen = function (e) {  //开始创建连接时的事件
+        dispStatus.innerText = "连接成功...."
+        console.log(ws)
+    }
+
+    ws.onmessage = function (evt) {   //读取服务端接收到的信息
+        console.log("Received Message: " + evt);
+        console.log("Received Message: " + evt.data);
+        data_array = JSON.parse(evt.data);
+        console.log(data_array);
+        dispStatus.innerHTML += "<br/>" + evt.data;        //信息显示
+    }
+
+    function sendMsg() {
+        var val = inputText.value
+        console.log("发送 数据：" + val)
+        var time = new Date();
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+        var seconds = time.getSeconds();
+        var nowTime = hours + ":" + minutes + ":" + seconds
+        ws.send(u + "-" + nowTime + "：" + val);   //向服务端发送输入框中的值
+    }
+
+    ws.onclose = function () {
+        dispStatus.innerHTM += "<br/>服务器关闭"
+    }
+
+    ws.onerror = function () {
+        dispStatus.innerHTM += "<br/>连接出错"
+    }
+</script>
+</body>
 </html>

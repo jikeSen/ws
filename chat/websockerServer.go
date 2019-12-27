@@ -6,7 +6,6 @@ import (
     "go/ws/library"
     "go/ws/library/code"
     "go/ws/models"
-    "log"
     "math/rand"
     "net/http"
     "net/url"
@@ -19,6 +18,15 @@ type WsAuth struct {
     Token string
     App   int
     Tune  string
+}
+
+var upgrade = websocket.Upgrader{
+    HandshakeTimeout: time.Second * 30,
+    ReadBufferSize:   2048,
+    WriteBufferSize:  2048,
+    CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
 }
 
 func StartWebSocket() error {
@@ -47,31 +55,21 @@ func wsHandle(writer http.ResponseWriter, request *http.Request) {
         return
     }
 
-    client, err := NewSocketServer(writer, request, createSocketId(7))
+    // 连接实例
+    conn, err := upgrade.Upgrade(writer, request, nil)
+
     if err != nil {
         writer.Write([]byte(code.GetCodeMsg(code.SOCKET_CREAT_ERR)))
         return
     }
+    queryForm, err := url.ParseQuery(request.URL.RawQuery)
+    uid, _ := strconv.Atoi(queryForm.Get("uid"))
 
-    defer client.conn.Close()
+    client := CreateClient(conn, conn.RemoteAddr().String(), uid)
 
-    client.SendMsg(SysMsg, fmt.Sprintf("您好，您的ID：%s", client.Id, ))
-
-    // 待优化...
-    // 拆分 read 和 write 使用携程并行处理
-
-    for {
-        _, p, err := client.conn.ReadMessage()
-        if err != nil {
-            log.Println(err)
-            return
-        }
-
-        if err := client.SendMsg(TxtMsg, string(p)); err != nil {
-            log.Println(err)
-            return
-        }
-    }
+    // 协程读写消息
+    go client.RedMessage()
+    go client.WriteMsg()
 }
 
 func authorizedConnect(writer http.ResponseWriter, request *http.Request) error {
