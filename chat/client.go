@@ -52,7 +52,7 @@ func (client *Client) RedMessage() {
 }
 
 //发送消息 读取客户端package 发送
-func (client *Client) WriteMsg() {
+func (client *Client) WriteMessage() {
 
     for {
         select {

@@ -69,7 +69,7 @@ func wsHandle(writer http.ResponseWriter, request *http.Request) {
 
     // 协程读写消息
     go client.RedMessage()
-    go client.WriteMsg()
+    go client.WriteMessage()
 }
 
 func authorizedConnect(writer http.ResponseWriter, request *http.Request) error {
