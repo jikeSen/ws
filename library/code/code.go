@@ -6,8 +6,9 @@ const (
     INVALID_PARAMS = 400
 
     // 业务错误代码 ...
-	AUTH_ERR = 4003
+    AUTH_ERR            = 4003
+    GIFT_NOT_FOUNT      = 4004
 
-	SOCKET_CREAT_ERR = 5005
-	SOCKET_PROTOCOL_ERR = 5009
+    SOCKET_CREAT_ERR    = 5005
+    SOCKET_PROTOCOL_ERR = 5009
 )

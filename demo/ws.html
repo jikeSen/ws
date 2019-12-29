@@ -10,7 +10,9 @@
 
 <body>
 <p>jksen</p>
-<button id='send' onclick="sendMsg()">发送</button>
+
+<button id='send' onclick="sendMsg(1)">发送</button>
+<button id='send' onclick="sendMsg(2)">送礼物</button>
 <input type='text' id='inputText'>
 <p id='dispStatus'>正在连接...</p>
 
@@ -20,6 +22,12 @@
     var dispStatus = document.getElementById('dispStatus');
     var token = "Bm/rVtNJ2wF+k7f0/p/0uQ=="
     var queryString = "app=99&tune=IASO010&uid=111888"
+
+    var CMD = "gift";
+    var giftId = inputText;
+    var sender = 1000040;
+    var getter = 12345;
+
 
     secret = hex_sha1(hex_md5(token + "&" + queryString))
 
@@ -37,15 +45,23 @@
         dispStatus.innerHTML += "<br/>" + evt.data;        //信息显示
     }
 
-    function sendMsg() {
-        var val = inputText.value
-        console.log("发送 数据：" + val)
+    function sendMsg(type) {
+        if (type == 2) {
+            val = {}
+            val.CMD = CMD
+            val.giftId = parseInt(inputText.value)
+            val.sender = sender
+            val.getter = getter
+            val.Num = 1
+        } else {
+            val = inputText.value
+        }
         var time = new Date();
         var hours = time.getHours();
         var minutes = time.getMinutes();
         var seconds = time.getSeconds();
         var nowTime = hours + ":" + minutes + ":" + seconds
-        ws.send(u + "-" + nowTime + "：" + val);   //向服务端发送输入框中的值
+        ws.send(JSON.stringify(val));   //向服务端发送输入框中的值
     }
 
     ws.onclose = function () {

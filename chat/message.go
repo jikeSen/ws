@@ -2,7 +2,9 @@ package chat
 
 import (
     "fmt"
+    "github.com/json-iterator/go"
     "go/ws/library/code"
+    "go/ws/services"
 )
 
 const (
@@ -28,9 +30,9 @@ type Message struct {
 
 // 响应消息
 type RespMsg struct {
-    Code int    `json:"code"`
-    Msg  string `json:"msg"`
-    Data string `json:"data"`
+    Code int         `json:"code"`
+    Msg  string      `json:"msg"`
+    Data interface{} `json:"data"`
 }
 
 // c2c消息
@@ -39,11 +41,33 @@ type C2CMsg struct {
     ToAccount string
 }
 
+type GiftMsgs struct {
+    CMD    string
+    GiftId int
+    Sender int
+    Getter int
+    Num    int
+}
+
 // 处理客户端消息
 func HandleGetMsg(client *Client, message []byte) {
-    fmt.Println("处理数据", client.Addr, string(message))
+    fmt.Println("处理数据.....", client.Addr, string(message))
+
+    msgObj := GiftMsgs{}
+    var json = jsoniter.ConfigCompatibleWithStandardLibrary
+    jsonerr := json.Unmarshal(message, &msgObj)
+    if jsonerr != nil {
+        fmt.Println(jsonerr)
+        return
+    }
 
     // 查询 送礼 扣费 流水等业务code
+
+    switch msgObj.CMD {
+    case "gift":
+        services.SendGift(msgObj.Sender, msgObj.Getter, msgObj.GiftId, msgObj.Num)
+        break
+    }
 
     client.SendMsg(code.SUCCESS, code.GetCodeMsg(code.SUCCESS), "测试业务")
 }

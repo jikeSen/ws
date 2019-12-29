@@ -47,7 +47,11 @@ func (client *Client) RedMessage() {
             log.Println(err)
             return
         }
-        HandleGetMsg(client, msg)
+
+        if err != nil {
+            return
+        }
+        HandleGetMsg(client,msg)
     }
 }
 
@@ -67,7 +71,7 @@ func (client *Client) WriteMessage() {
     }
 }
 
-// client 数据包写入数据
+// client 数据包写入数据，通过通信来共享内存
 func (client *Client) SendMsg(code int, msg, data string) (err error) {
 
     var Msg = &RespMsg{

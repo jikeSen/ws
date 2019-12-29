@@ -14,7 +14,7 @@ func ConnectRedis() error {
         MaxActive:   35,
         IdleTimeout: 200,
         Dial: func() (redis.Conn, error) {
-            conn, err := redis.Dial("tcp", library.RedisSet.Host+library.RedisSet.Port)
+            conn, err := redis.Dial("tcp", library.RedisSet.Host+ ":" +library.RedisSet.Port)
             if err != nil {
                 return nil, err
             }
