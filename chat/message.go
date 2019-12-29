@@ -61,8 +61,6 @@ func HandleGetMsg(client *Client, message []byte) {
         return
     }
 
-    // 查询 送礼 扣费 流水等业务code
-
     switch msgObj.CMD {
     case "gift":
         services.SendGift(msgObj.Sender, msgObj.Getter, msgObj.GiftId, msgObj.Num)

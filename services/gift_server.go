@@ -6,6 +6,7 @@ import (
 )
 
 // 获取礼物信息（礼物如果更新 后台要刷新缓存，防止礼物无效）
+// 后期优化+ bitmap 来提高查询效率
 func GetGiftInfo(id int) (GrabInfo *models.Grab, err error) {
     GrabInfo, err = cache.GetGrabInfo(id)
 
